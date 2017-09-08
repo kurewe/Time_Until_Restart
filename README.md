@@ -42,11 +42,15 @@ simply because we needed a starting number and I have 4 hour restarts. So, why n
 /* YOU NEED TO RUN THE ENTIRE QUERY BETWEEN THESE COMMENTS */
 
 CREATE TABLE IF NOT EXISTS `restart_timer` (
+
 	`id` INT(11) unsigned NOT NULL,
+	
 	`time_until_restart` varchar(64) NOT NULL
+	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `restart_timer` (`id`, `time_until_restart`) VALUES
+
 (1, '240');
 
 /* YOU NEED TO RUN THE ENTIRE QUERY BETWEEN THESE COMMENTS */
@@ -64,8 +68,11 @@ Common location of exile.ini: C:\Arma\Server\@ExileServer\extDB\sql_custom_v2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [updateTimeUntilRestart]
+
 SQL1_1 = UPDATE restart_timer SET time_until_restart = ? WHERE id = ?
+
 Number Of Inputs = 2
+
 SQL1_INPUTS = 1,2
 
 /* YOU NEED TO ADD EVERYTHING BETWEEN THESE COMMENTS */
