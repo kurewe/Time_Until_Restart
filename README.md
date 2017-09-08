@@ -42,8 +42,8 @@ simply because we needed a starting number and I have 4 hour restarts. So, why n
 /* YOU NEED TO RUN THE ENTIRE QUERY BETWEEN THESE COMMENTS */
 
 CREATE TABLE IF NOT EXISTS `restart_timer` (
-	`id` INT(11) unsigned NOT NULL,
-	`time_until_restart` varchar(64) NOT NULL
+`id` INT(11) unsigned NOT NULL,
+`time_until_restart` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `restart_timer` (`id`, `time_until_restart`) VALUES
