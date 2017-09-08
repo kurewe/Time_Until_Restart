@@ -1,2 +1,211 @@
-# Time_Until_Restart
-External Time Until Restart Clock/Timer
+/*
+ *
+ *  External Time Until Restart Clock/Timer
+ *  Created for Arma 3 Exile Servers
+ *
+ *  Created by: Kurewe
+ *  Website: http://cantankerousoldgoats.enjin.com/
+ *
+ */
+
+This project basically gives you a way to display the time left until the server
+restarts on a web site. I've done this in PHP and then "converted" the resulting
+database info into a "dynamic" image via PHP as well. In its current form, the
+image does not refresh automatically. You just click the refresh button on your
+browser and it queries your database, returning the current time left until 
+restart. I opted to convert the data to an image due to the lack of PHP on Enjin
+and more importantly, because you get a much better and more customizable display
+of the data. If you have any web development abilities, you should be able to
+adapt what I've done to suit your needs.
+
+I have placed information and instructions below that will help you to get this
+running for your server.
+
+PREREQUISITES:
+1. Some basic web development knowledge
+2. You'll need access to a website to upload/store the files
+3. The website where you host the files must have PHP and have GD Support enabled
+   GD Support (Graphics Drawing Support) is what allows the conversion of the
+   database query result into an image.
+   A site hosted on GoDaddy for example, will typically have what you need.
+4. The ability to follow my detailed instructions
+
+SETUP:
+
+*Step 1*
+
+Run this query on your Exile database
+It is simply to add the "restart_timer" table and insert an initial value for "id"
+and "time_until_restart". I used 240 for the initial "time_until_restart" value
+simply because we needed a starting number and I have 4 hour restarts. So, why not?
+
+/* YOU NEED TO RUN THE ENTIRE QUERY BETWEEN THESE COMMENTS */
+
+CREATE TABLE IF NOT EXISTS `restart_timer` (
+	`id` INT(11) unsigned NOT NULL,
+	`time_until_restart` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `restart_timer` (`id`, `time_until_restart`) VALUES
+(1, '240');
+
+/* YOU NEED TO RUN THE ENTIRE QUERY BETWEEN THESE COMMENTS */
+
+
+*Step 2*
+
+Add this query to the bottom of your exile.ini and save.
+Common location of exile.ini: C:\Arma\Server\@ExileServer\extDB\sql_custom_v2
+
+/* YOU NEED TO ADD EVERYTHING BETWEEN THESE COMMENTS */
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Time Until Restart Update Query
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[updateTimeUntilRestart]
+SQL1_1 = UPDATE restart_timer SET time_until_restart = ? WHERE id = ?
+Number Of Inputs = 2
+SQL1_INPUTS = 1,2
+
+/* YOU NEED TO ADD EVERYTHING BETWEEN THESE COMMENTS */
+
+
+*Step 3*
+
+Copy the ExileServer_system_rcon_thread_check.sqf from the CUSTOM CODE folder to
+the folder where you keep your server file "overwrites". I personally use a folder
+called "custom". If you use a different folder, be sure to modify the line in the
+next step accordingly. 
+
+
+*Step 4*
+
+Next, you'll need to edit your mission's config.cpp file. Copy the lines below and
+paste them into the "class CfgExileCustomCode" section of your config.cpp and save.
+
+	//Update Time Until Restart to DB
+	ExileServer_system_rcon_thread_check = "custom\ExileServer_system_rcon_thread_check.sqf";
+
+
+NOW IT'S TIME TO EDIT THE PHP FILES
+
+
+*Step 5*
+
+Open the 'include/dbinfo.php' file with Notepad++ or any text editor and enter your
+database login info. I included comments in the file for clarification if needed.
+Save the file once you have finished.
+
+
+*Step 6*
+
+Open the 'timer.php' file with Notepad++ or any text editor. Here is where we do
+any customization of the resulting timer image that will be displayed on your web
+site. The timer image size is dynamic, based on what settings you choose.
+Increasing the size of the font will increase the size of the timer image.
+Increasing the padding around the text of the timer image will also increase the
+size.
+
+The 1st item you can customize is the font used:
+Line 49: var $font = 'fonts/fontname.ttf';
+I have included some freeware fonts in the "font" folder to get you started.
+You can use any standard TTF font. Should you want to use a font that I did not
+include, just add the .ttf file to the "fonts" folder. Once you have decided on
+a font, edit this line to reflect the proper font filename.
+
+The next setting is for the font size:
+Line 50: var $size = 32;
+The default font size is 32. However, you can adjust the font size to suit your
+needs. As an example, I used a size of 48 on my Enjin site since i wanted it
+clearly visible and it worked well with the font I was using. 
+
+The next setting is for the image rotation:
+Line 51: var $rot = 0;
+You may wish to rotate the timer image. If you do, the image rotates to the left.
+So, if you set it to 90, the image would rotate 90 degrees to the left, leaving
+the top of the timer image facing the left side of your screen.
+
+The next setting is for the padding around the text:
+Line 52: var $pad = 10;
+This setting will adjust the amount of space there is around the text of the
+timer image. You can increase or decrease the amount of padding/space to suit
+your needs. I used 10, as it seemed to be pretty good for my needs.
+
+The next setting is for background transparency:
+Line 53: var $transparent = 0;
+You can choose to have the background of the timer image transparent or not.
+If having a transparent background works better for you than using a solid
+background color, you can set this to 1. If it is set to 1, it will override
+the background color settings below.
+
+The next 3 settings are for the text color:
+Lines 54/55/56: var $red = 40; / var $grn = 140; / var $blu = 0;	
+All 3 of these settings work together to get you the color of the text in your
+timer image. You will need to know the RGB values for your chosen color. I used
+a shade of green for my text. There are a number of ways to find the RGB values
+for your chosen color. I won't explain them all. However, I have provided a
+couple links to sites that will be useful in finding a color and its RGB values.
+
+RGB Calculator
+https://www.w3schools.com/colors/colors_rgb.asp
+
+500+ colors by color name, Hex value and RGB value
+http://cloford.com/resources/colours/500col.htm
+
+The next 3 settings are for the background color:
+Lines 57/58/59: var $bg_red = 20; / var $bg_grn = 20; / var $bg_blu = 20;
+All 3 of these settings work together to get you the background color for your
+timer image. You will need to know the RGB values for your chosen color. I used
+a particular shade of dark grey, as it matched the background of the theme I
+use on my Enjin site. There are a number of ways to find the RGB values for
+your chosen color. I won't explain them all. However, I have provided a couple
+links to sites that will be useful in finding a color and its RGB values.
+
+RGB Calculator
+https://www.w3schools.com/colors/colors_rgb.asp
+
+500+ colors by color name, Hex value and RGB value
+http://cloford.com/resources/colours/500col.htm
+
+
+*Step 7*
+
+This is the step where you upload the files to the site on which you will using
+or from which you will be calling to the "timer.php". You can certainly
+customize filenames and folder names. Just remember that changing the name of
+a file or folder could break it unless you make sure you also reflect those
+changes in the other files.
+
+There are many ways in which this can be used. Unfortunately, I can not explain
+every scenario or situation. This is where having some knowledge of web
+development, HTML and PHP will help you decide how to fit what I have done into
+your website or environment. I will respond to questions in the Exile forum thread. 
+
+http://www.exilemod.com/topic/22286-external-time-until-restart-clocktimer/
+
+As I've said throughout this file, I use an Enjin site. In order to use this on
+Enjin, you will need to make use of the HTML module. In order to use the HTML
+module, you must upgrade your Enjin site to a paid plan. Once you have access
+to use the HTML module, all you have to do is insert an image and use the URL
+of the timer.php as the image URL. I put some examples below.
+I also included a 'sample.php' that gives the same Time Until Restart data,
+but demonstrates basic PHP and HTML output of the data.
+
+Enjin Example:
+<center>
+	<span style="font-family: 'arial black', 'avant garde'; color: #20beff; font-size: 13pt;">
+		<strong>Server Restarts in:</strong>
+	</span>
+	<img src="http://cog.kurewe.com/restarttimer/timer.php" alt="" width="163" height="62" style="display: block; margin-left: auto; margin-right: auto;" />
+</center>
+
+If you wanted to put it on a "standard" website, in a table or iframe or something
+similar, you could use basic HTML as well.
+
+Standard Web Use Example: Using an iframe
+<iframe src="timer.php"></iframe>
+
+Standard Web Use Example: Using an <img> tag
+<img src="timer.php" alt="Restart Timer">
+
