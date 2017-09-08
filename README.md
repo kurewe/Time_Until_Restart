@@ -208,4 +208,3 @@ Standard Web Use Example: Using an iframe
 
 Standard Web Use Example: Using an <img> tag
 <img src="timer.php" alt="Restart Timer">
-
