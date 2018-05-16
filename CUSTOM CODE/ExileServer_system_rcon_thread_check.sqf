@@ -37,6 +37,7 @@ if (typeName ExileServerRestartMessages isEqualTo "ARRAY") then
 				if (count ExileSessionIDs > 0) then
 				{
 					["toastRequest", ["InfoTitleAndText", ["Restart incoming!", format["Server is going to restart in %1 min! Log out before the restart to prevent gear loss.", _time] ]]] call ExileServer_system_network_send_broadcast;
+					["baguetteRequest", [format["Server is going to restart in %1 min!",_time]]] call ExileServer_system_network_send_broadcast;
 				};
 				ExileServerRestartMessages deleteAt _forEachIndex;
 				format ["Restart Warnings for %1min sent",_time] call ExileServer_util_log;
@@ -52,6 +53,7 @@ if (_timeTilRestart < _lockTime) then
 		"#lock" call ExileServer_system_rcon_event_sendCommand;
 		"Server locked for restart" call ExileServer_util_log;
 		["toastRequest", ["ErrorTitleAndText", ["Server will restart now!", "You will be kicked off the server due to a restart."]]] call ExileServer_system_network_send_broadcast;
+		["baguetteRequest", ["Server will restart now!"]] call ExileServer_system_network_send_broadcast;
 		ExileServerIsLocked = true;
 	};
 	if (_timeTilRestart < _kickTime) then
@@ -71,6 +73,10 @@ if (_timeTilRestart < _lockTime) then
 			if(getNumber(configFile >> "CfgSettings" >> "RCON" >> "useShutdown") isEqualTo 1)then
 			{
 				'#shutdown' call ExileServer_system_rcon_event_sendCommand;
+			}
+			else
+			{
+				'#restart' call ExileServer_system_rcon_event_sendCommand;
 			};
 		};
 	};
