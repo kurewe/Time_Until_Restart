@@ -4,7 +4,7 @@
  *  Created for Arma 3 Exile Servers
  *
  *  Created by: Kurewe
- *  Website: http://cantankerousoldgoats.enjin.com/
+ *  Website: http://cantankerousoldgoats.com/
  *
  */
 
